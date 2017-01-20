@@ -1,0 +1,22 @@
+﻿@model List<BookStore.Models.IBook>
+
+@{
+    ViewBag.Title = "_Cart";
+}
+
+<h2>Shopping Cart</h2>
+
+@Html.Action("GetTotalPrice", "Cart")
+@Html.ActionLink("Buy books", "BuyBooks", null, new { @class="btn btn-success"})
+
+<br />
+
+@foreach(var book in Model)
+{
+    <span> @book.Title   -   Price: @book.Price  
+           @Ajax.ActionLink("Remove", "DeleteFromCart", "Cart",
+                       new { Author = @book.Author, Title = book.Title, Price = book.Price },
+                       new AjaxOptions { UpdateTargetId = "cart", InsertionMode = InsertionMode.Replace },
+                       new { @class = "btn btn-sm btn-info" })
+    <br /></span>
+}

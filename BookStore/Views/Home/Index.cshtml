@@ -1,0 +1,68 @@
+﻿@model IEnumerable<BookStore.Models.IBook>
+@{
+    ViewBag.Title = "Home Page";
+}
+
+<div class="container">
+
+    @if (ViewBag.error != null)
+    {
+        <h1>No books available</h1>
+    }
+
+    @* shopping cart *@
+    <div id="cart" class="col-sm-4">
+        @Html.Action("ShowCart", "Cart")
+    </div>
+
+    <div id="mainContent" class="col-sm-8">
+        @* Search *@
+        <h3>Search for a book or author</h3>
+        @using (Html.BeginForm("Search", "Home"))
+        {
+            <div class="form-group">
+                <input type="text" class="form-control" name="filter" placeholder="Empty search for all books" />
+                <input type="submit" value="Search" />
+            </div>
+        }
+
+        @* Books *@
+        <table class="table">
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Author)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Price)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Title)
+                </th>
+                <th></th>
+            </tr>
+
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Author)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Price)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Title)
+                    </td>
+                    <td>
+                        @Ajax.ActionLink("Add To Cart", "AddToCart", "Cart",
+                       new { Author = @item.Author, Title = item.Title, Price = item.Price },
+                       new AjaxOptions { UpdateTargetId = "cart", InsertionMode = InsertionMode.Replace },
+                       new { @class = "btn btn-sm btn-info" })
+                    </td>
+                </tr>
+            }
+
+        </table>
+    </div>
+    
+</div>

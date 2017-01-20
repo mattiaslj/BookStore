@@ -1,0 +1,44 @@
+﻿@model IEnumerable<BookStore.Models.IBook>
+
+@{
+    ViewBag.Title = "BuyBooks";
+}
+
+<h2>BuyBooks</h2>
+
+<span>
+    You bought these books,
+</span>
+@Html.Action("GetTotalPrice", "Cart")
+
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Author)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Price)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Title)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Author)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Price)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Title)
+        </td>
+    </tr>
+}
+
+</table>
+
+@Html.ActionLink("Back to store", "BackToStore", "Home", null, new { @class = "btn btn-success"})
