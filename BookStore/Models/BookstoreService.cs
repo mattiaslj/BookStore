@@ -12,17 +12,17 @@ namespace BookStore.Models
         private string URI = "http://www.contribe.se/arbetsprov-net/books.json";
         public Task<IEnumerable<IBook>> GetBooksAsync(string searchString)
         {
-            return Task<IEnumerable<IBook>>.Factory.StartNew(() =>
+            var result = Task<IEnumerable<IBook>>.Factory.StartNew(() =>
             {
                 string booksJson = GetBooksFromUrl(URI);
                 return JsonToBooks(booksJson, searchString);
             });
-
+            return result;
         }
 
-        public Task<IEnumerable<IBook>> GetBoughtBooksAsync(List<IBook> orderedBooks)
+        public async Task<IEnumerable<IBook>> GetBoughtBooksAsync(List<IBook> orderedBooks)
         {
-            return Task<IEnumerable<IBook>>.Factory.StartNew(() =>
+            var result = await Task<IEnumerable<IBook>>.Factory.StartNew(() =>
             {
                 string booksAsJson = GetBooksFromUrl(URI);
                 // Deserialize json string
@@ -64,6 +64,8 @@ namespace BookStore.Models
                 }
                 return orderedBooks;
             });
+
+            return result;
         }
 
         // Returns a list of books in json
@@ -71,16 +73,27 @@ namespace BookStore.Models
         {
             using (WebClient wc = new WebClient())
             {
-                // Get booklist from url
-                wc.Encoding = Encoding.UTF8;
-                var booksJson = wc.DownloadString(URI);
-                return booksJson;
+                try
+                {
+                    // Get booklist from url
+                    wc.Encoding = Encoding.UTF8;
+                    var booksJson = wc.DownloadString(URI);
+                    return booksJson;
+                }
+                catch
+                {
+                    return null;
+                }
             }
         }
 
         // Takes json string and converts it into a c# object that can implement IBook
         private IEnumerable<IBook> JsonToBooks(string booksJson, string searchString)
         {
+            if (booksJson == null)
+            {
+                return null;
+            }
             // Deserialize json string
             JavaScriptSerializer js = new JavaScriptSerializer();
             dynamic books = js.DeserializeObject(booksJson);

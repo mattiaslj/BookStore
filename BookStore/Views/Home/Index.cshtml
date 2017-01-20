@@ -18,10 +18,10 @@
     <div id="mainContent" class="col-sm-8">
         @* Search *@
         <h3>Search for a book or author</h3>
-        @using (Html.BeginForm("Search", "Home"))
+        @using (Html.BeginForm("Index", "Home"))
         {
             <div class="form-group">
-                <input type="text" class="form-control" name="filter" placeholder="Empty search for all books" />
+                <input type="text" class="form-control" name="searchString" placeholder="Empty search for all books" />
                 <input type="submit" value="Search" />
             </div>
         }
@@ -40,29 +40,32 @@
                 </th>
                 <th></th>
             </tr>
-
-            @foreach (var item in Model)
+            @if (Model != null)
             {
-                <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Author)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Price)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Title)
-                    </td>
-                    <td>
-                        @Ajax.ActionLink("Add To Cart", "AddToCart", "Cart",
+                foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Author)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Price)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Title)
+                        </td>
+                        <td>
+                            @Ajax.ActionLink("Add To Cart", "AddToCart", "Cart",
                        new { Author = @item.Author, Title = item.Title, Price = item.Price },
                        new AjaxOptions { UpdateTargetId = "cart", InsertionMode = InsertionMode.Replace },
                        new { @class = "btn btn-sm btn-info" })
-                    </td>
-                </tr>
+                        </td>
+                    </tr>
+                }
             }
+
 
         </table>
     </div>
-    
+
 </div>

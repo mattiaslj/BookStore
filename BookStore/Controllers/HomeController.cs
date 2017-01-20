@@ -20,28 +20,15 @@ namespace BookStore.Controllers
 
         public async Task<ActionResult> Index(string searchString = "")
         {
-            try
+            // Get all books
+            IEnumerable<IBook> books = await bookstoreService.GetBooksAsync(searchString);
+            if (books != null)
             {
-                // Get all books
-                IEnumerable<IBook> books = await bookstoreService.GetBooksAsync(searchString);
-                if (books != null)
-                {
-                    return View(books);
-                }
-            }
-            catch
-            {
-
+                return View(books);
             }
 
             ViewBag.error = "No books found";
             return View();
-        }
-
-        [HttpPost]
-        public ActionResult Search(string filter = "")
-        {
-            return RedirectToAction("Index", "Home", new { searchString = filter });
         }
 
         public ActionResult BackToStore()
